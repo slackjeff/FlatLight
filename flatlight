@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------------------#
+# Author      : Jefferson Carneiro <slackjeff@slackjeff.com.br>
+# PRG         : flatlight
+# Depends     :
+#   - flatpak
+#   - fzf
+#
+# cache gen, Install, Remove, Upgrade
+#-------------------------------------------------------------------#
+
+#----------------------------------#
+# GLOBAL VARS
+#----------------------------------#
+export PRG="FlatLight"
+export VERSION="1.0"
+export CACHE_DIR="/home/slackjeff/.cache/flathub.txt"
+
+#----------------------------------#
+# Functions
+#----------------------------------#
+
+# Generate Cache
+function cache_generate()
+{
+    gum spin \
+    --spinner dot \
+    --title "Baixando catálogo Flathub..." \
+    -- sh -c "flatpak remote-ls flathub --app --columns=name,application | awk -F '\t' '{printf \"%-45s %s\n\",\$1,\$2}' > '$CACHE_DIR'"
+}
+
+function install_flatpak()
+{
+fzf \
+  --multi \
+  --height=80% \
+  --layout=reverse \
+  --border \
+  --margin=1 \
+  --padding=1 \
+  --prompt="📦 Apps > " \
+  --pointer="➜" \
+  --marker="✓" \
+  --header="Flathub - selecione aplicativos (TAB marca)" \
+  --info=inline \
+  --cycle \
+  --bind="ctrl-a:select-all,ctrl-d:deselect-all" \
+  < "$CACHE_DIR"
+}
+
+#----------------------------------#
+# Main
+#----------------------------------#
+clear
+#cache_generate
+MENU=$(printf "Instalar apps\nRemover apps\nAtualizar tudo\nSair" | \
+fzf \
+  --height=40% \
+  --layout=reverse \
+  --border=rounded \
+  --margin=1 \
+  --padding=1 \
+  --prompt="📦 Flatpak > " \
+  --pointer="➜ " \
+  --header="Gerenciador Flatpak" \
+  --info=hidden \
+  --no-multi)
+MENU=${MENU,,}
+case "$MENU" in
+    "install") install_flatpak ;;
+    "exit" ) exit 0 ;;
+    *) echo "ajuda" ;;
+esac
+
+
