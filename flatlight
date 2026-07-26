@@ -1,75 +1,121 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-only
 #-------------------------------------------------------------------#
 # Author      : Jefferson Carneiro <slackjeff@slackjeff.com.br>
 # PRG         : flatlight
+# DSC         :
+#   FlatLight is a lightweight CLI application manager for Flatpak.
+#   It provides an interactive Flathub browser using fzf, with local
+#   cache support and simple application installation workflow.
+#
 # Depends     :
 #   - flatpak
 #   - fzf
 #
 # cache gen, Install, Remove, Upgrade
 #-------------------------------------------------------------------#
+set -euo pipefail
 
 #----------------------------------#
 # GLOBAL VARS
 #----------------------------------#
 export PRG="FlatLight"
 export VERSION="1.0"
-export CACHE_DIR="/home/slackjeff/.cache/flathub.txt"
+export CACHE_FILE="${HOME}/.cache/${PRG}-flathub.cache"
+
+# Time (in seconds) before the Flathub cache is refreshed
+export CACHE_TIME=$((24 * 60 * 60))
 
 #----------------------------------#
 # Functions
 #----------------------------------#
 
-# Generate Cache
-function cache_generate()
+# Generate new/update Cache
+function update_cache()
 {
-    gum spin \
-    --spinner dot \
-    --title "Baixando catálogo Flathub..." \
-    -- sh -c "flatpak remote-ls flathub --app --columns=name,application | awk -F '\t' '{printf \"%-45s %s\n\",\$1,\$2}' > '$CACHE_DIR'"
+	echo "Generating cache file, Wait..."
+	flatpak remote-ls flathub --app --columns=name,application | awk -F '\t' '{printf \"%-45s %s\n\",\$1,\$2}' > '$CACHE_FILE'
+
 }
 
 function install_flatpak()
 {
-fzf \
-  --multi \
-  --height=80% \
-  --layout=reverse \
-  --border \
-  --margin=1 \
-  --padding=1 \
-  --prompt="📦 Apps > " \
-  --pointer="➜" \
-  --marker="✓" \
-  --header="Flathub - selecione aplicativos (TAB marca)" \
-  --info=inline \
-  --cycle \
-  --bind="ctrl-a:select-all,ctrl-d:deselect-all" \
-  < "$CACHE_DIR"
+	local SELECTED
+	
+	SELECTED=$(fzf \
+	  --multi \
+	  --height=80% \
+	  --layout=reverse \
+	  --border \
+	  --margin=1 \
+	  --padding=1 \
+	  --prompt="📦 Apps > " \
+	  --pointer="➜" \
+	  --marker="✓" \
+	  --header="Flathub - selecione aplicativos (TAB marca) para múltiplos." \
+	  --info=inline \
+	  --cycle \
+	  --bind="ctrl-a:select-all,ctrl-d:deselect-all" \
+	  < "$CACHE_FILE"
+	)
+	
+	# Take ID flatpak and build one argument with xargs.
+	SELECTED=$(echo "$SELECTED" | awk '{print $NF}' | xargs)
+	
+	echo "Iniciando Instalação de pacotes!"
+	flatpak install $SELECTED -y
+	
+	read -p "Instalação conclluida com sucesso. [ENTER]" enter
 }
+
+function check_cache_update()
+{
+	local age
+
+	[[ ! -f "$CACHE_FILE" ]] && return  0
+
+	age=$(( $(date +%s) - $(stat -c %Y "$CACHE_FILE") ))
+	if [[ "$age" -gt "$CACHE_TIME" ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+#----------------------------------#
+# Tests
+#----------------------------------#
+
+#  Have cache? Or need update? 
+if check_cache_update; then
+	update_cache
+fi
 
 #----------------------------------#
 # Main
 #----------------------------------#
-clear
-#cache_generate
-MENU=$(printf "Instalar apps\nRemover apps\nAtualizar tudo\nSair" | \
-fzf \
-  --height=40% \
-  --layout=reverse \
-  --border=rounded \
-  --margin=1 \
-  --padding=1 \
-  --prompt="📦 Flatpak > " \
-  --pointer="➜ " \
-  --header="Gerenciador Flatpak" \
-  --info=hidden \
-  --no-multi)
-MENU=${MENU,,}
-case "$MENU" in
-    "install") install_flatpak ;;
-    "exit" ) exit 0 ;;
-    *) echo "ajuda" ;;
-esac
+while true; do
+	clear
+	#cache_generate
+	MENU=$(printf "Instalar\nRemover\nAtualizar\nSair" | \
+	fzf \
+	  --height=40% \
+	  --layout=reverse \
+	  --border=rounded \
+	  --margin=1 \
+	  --padding=1 \
+	  --prompt="📦 ${PRG} - ${VERSION} > " \
+	  --pointer="➜ " \
+	  --header="O que deseja fazer?" \
+	  --info=hidden \
+	  --no-multi)
+	MENU=${MENU,,}
+
+	case "$MENU" in
+		"instalar") install_flatpak ;;
+		"sair" ) exit 0 ;;
+		*) echo "ajuda" ;;
+	esac
+done
 
 
