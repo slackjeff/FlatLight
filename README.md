@@ -47,3 +47,12 @@ Para que o Flatlight funcione corretamente no seu sistema, certifique-se de ter 
 ```
 chmod +x flatlight
 ```
+
+## Roadmap do Projeto
+Este documento descreve os objetivos futuros e o planejamento de evolucao
+
+## [Planejado]
+* [ ] Melhorar o formato de cache que hoje é simples
+* [ ] Documentação para man (página de manual do sistema)
+* [ ] Internacionalização com gettext
+* [ ] Validação automática de dependências (`fzf` e `flatpak` instalados)
