@@ -25,7 +25,7 @@
 # Variaveis Globais
 #----------------------------------#
 export PRG="FlatLight"
-export VERSION="1.0-alfa"
+export VERSION="1.1-alfa"
 export CACHE_FILE="${HOME}/.cache/${PRG}-flathub.cache"
 #
 # Define o tempo (em segundos) para atualização do cache do Flathub.
@@ -43,7 +43,7 @@ fEnd='\e[m'
 # Funções
 #----------------------------------#
 
-# Gera/atualiza o cache de aplicativos Flatpak do Flathub para uso no seletor fzf.
+# Gera/atualiza o CACHE de aplicativos Flatpak do Flathub para uso no seletor fzf.
 function update_cache()
 {
 	echo -e "${fGreen}Generating cache file, Wait...${fEnd}"
@@ -52,31 +52,56 @@ function update_cache()
 
 }
 
-# Seleciona aplicativos Flatpak usando fzf e retorna os IDs selecionados em um array.
+# Função modular para fazer listagem dos apps. É utilizado pelas funções:
+# - install_flatpak
+# - remove_flatpak
 function select_flatpak()
 {
-	local -n RESULT=$1
-	
-	mapfile -t RESULT < <(
-	fzf \
-	  --multi \
-	  --height=80% \
-	  --layout=reverse \
-	  --border \
-	  --margin=1 \
-	  --padding=1 \
-	  --prompt="📦 Apps > " \
-	  --pointer="➜" \
-	  --marker="✓" \
-	  --header="Flathub - selecione aplicativos (TAB marca) para múltiplos." \
-	  --info=inline \
-	  --cycle \
-	  --bind="ctrl-a:select-all,ctrl-d:deselect-all" \
-	  < "$CACHE_FILE" | awk '{print $NF}'
-	)
+    local -n RESULT=$1
+    
+    # Modo cache por padrão ou installed para instalados no sistema
+    local MODE="${2:-cache}"
+    
+    # Necessário para saber o modo que sera rodado a lista com mapfile.
+    local INPUT_CMD
+    
+    # Estilo do prompt.
+    local PROMPT_TEXT="${3:-📦 Apps > }"
+    
+    # Mensagem que sera exibido para cada tela.
+    local TEXT="${4:-Selecione os aplicativos para INSTALAR (TAB marca). }"
+
+	# Qual modo será executado ?
+    if [[ "$MODE" == "installed" ]]; then
+		# Listagem de apps instalados na máquina do usuário para remoção.
+        INPUT_CMD="flatpak list --app --columns=name,application | awk -F '\t' '{printf \"%-45s %s\n\",\$1,\$2}'"
+    else
+		# Puxa do arquivo de cache do usuario todos apps. (Usuado para instalação)
+        INPUT_CMD="cat \"$CACHE_FILE\""
+    fi
+
+	# !!! FIXME !!!
+	# Precisamos usar o 'eval' para não duplicar esse trecho do mapfile + fzf.
+	# Podemos melhorar para evitar o uso do eval...
+	    mapfile -t RESULT < <(
+        eval "$INPUT_CMD" | fzf \
+          --multi \
+          --height=80% \
+          --layout=reverse \
+          --border \
+          --margin=1 \
+          --padding=1 \
+          --prompt="$PROMPT_TEXT" \
+          --pointer="➜" \
+          --marker="✓" \
+          --header="${TEXT}" \
+          --info=inline \
+          --cycle \
+          --bind="ctrl-a:select-all,ctrl-d:deselect-all" | awk '{print $NF}'
+    )
 }
 
-# Instala aplicativos Flatpak selecionados, ignorando pacotes já instalados.
+# INSTALA aplicativos Flatpak selecionados, ignorando pacotes já instalados.
 function install_flatpak()
 {
 	local PACKAGES=()
@@ -100,12 +125,12 @@ function install_flatpak()
 	done
 }
 
-# Verifica se o cache de aplicativos Flatpak precisa ser atualizado.
+# REMOVE aplicativos flatpak da máquina do usuário.
 function remove_flatpak()
 {
 	local PACKAGES=() # inicializando
 
-	select_flatpak PACKAGES
+	select_flatpak PACKAGES "installed" "🗑️ Remover > " "Selecione os aplicativos para REMOVER (TAB marca)."
 
 	# Algum pacote foi selecionado?
 	if [[ ${#PACKAGES[@]} -eq 0 ]]; then
@@ -115,7 +140,7 @@ function remove_flatpak()
 	for PACKAGE in "${PACKAGES[@]}"; do
 		if flatpak list --app --columns=application | grep -qx "$PACKAGE"; then
 			echo "Removendo $PACKAGE..."
-			flatpak uninstall "$PACKAGE" -y
+			flatpak uninstall "$PACKAGE"
 		else
 			echo -e "${fRed}⚠ $PACKAGE não está instalado${fEnd}"
 			read -n 1 -s -r -p "Pressione qualquer tecla para continuar..."
@@ -161,7 +186,7 @@ fi
 #----------------------------------#
 
 while true; do
-	clear
+	#clear
 	#cache_generate
 	MENU=$(printf "Instalar\nRemover\nAtualizar\nSair" | \
 	fzf \
