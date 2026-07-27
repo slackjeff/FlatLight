@@ -82,7 +82,7 @@ function select_flatpak()
     local PROMPT_TEXT="${3:-📦 Apps > }"
     
     # Mensagem que sera exibido para cada tela.
-    local TEXT="${4:-$(gettext "Selecione os apps para INSTALAR  (TAB check)"). }"
+    local TEXT="${4:-$(gettext "Selecione os aplicativos para INSTALAR <TAB seleciona múltiplos>.")}"
 
 	# Qual modo será executado ?
     if [[ "$MODE" == "installed" ]]; then
@@ -167,7 +167,7 @@ function update_flatpak()
 	echo -e "${fGreen}$(gettext "Atualizando Flatpaks...")${fEnd}"
 	flatpak update -y
 
-	read -n 1 -s -r -p "$(gettext "Pressione qualquer tecla para continuar..")"
+	read -n 1 -s -r -p "$(gettext "Pressione qualquer tecla para continuar...")"
 }
 
 # Verifica se o cache expirou e precisa ser regenerado.

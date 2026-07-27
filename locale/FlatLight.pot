@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the FlatLight package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: FlatLight 1.1-alfa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-27 12:03-0300\n"
+"POT-Creation-Date: 2026-07-27 13:02-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "Gerando o arquivo de cache, Aguarde..."
 msgstr ""
 
 #: flatlight:85
-msgid "Selecione os apps para INSTALAR  (TAB check)"
+msgid "Selecione os aplicativos para INSTALAR <TAB seleciona múltiplos>."
 msgstr ""
 
 #: flatlight:131
