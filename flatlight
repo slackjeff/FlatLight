@@ -1,48 +1,64 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: AGPL-3.0-only
 #-------------------------------------------------------------------#
-# Author      : Jefferson Carneiro <slackjeff@slackjeff.com.br>
-# PRG         : flatlight
-# DSC         :
-#   FlatLight is a lightweight CLI application manager for Flatpak.
-#   It provides an interactive Flathub browser using fzf, with local
-#   cache support and simple application installation workflow.
+# Autor       : Jefferson Carneiro <slackjeff@slackjeff.com.br>
+# Programa    : flatlight
+# DESCRIÇÃO   :
+# FlatLight é um gerenciador leve de aplicativos Flatpak via terminal.
+# Ele fornece um navegador interativo do Flathub usando fzf, com suporte
+# a cache local e um fluxo simples para instalação de aplicativos.
 #
-# Depends     :
+# Dependências:
 #   - flatpak
 #   - fzf
 #
-# cache gen, Install, Remove, Upgrade
+# Recursos:
+#   - Gerar/atualizar cache
+#   - Instalar aplicativos
+#   - Remover aplicativos
+#   - Atualizar Flatpaks
+#
 #-------------------------------------------------------------------#
-set -euo pipefail
+
 
 #----------------------------------#
-# GLOBAL VARS
+# Variaveis Globais
 #----------------------------------#
 export PRG="FlatLight"
-export VERSION="1.0"
+export VERSION="1.0-alfa"
 export CACHE_FILE="${HOME}/.cache/${PRG}-flathub.cache"
-
-# Time (in seconds) before the Flathub cache is refreshed
-export CACHE_TIME=$((24 * 60 * 60))
+#
+# Define o tempo (em segundos) para atualização do cache do Flathub.
+export CACHE_TIME="$((24 * 60 * 60))"
+#
+# Defina as cores aqui!
+fRed='\e[31;1m'
+fGreen='\e[32;1m'
+fYellow='\e[33;1m'
+fBlue='\e[34;1m'
+fPink='\e[35;1m'
+fEnd='\e[m'
 
 #----------------------------------#
-# Functions
+# Funções
 #----------------------------------#
 
-# Generate new/update Cache
+# Gera/atualiza o cache de aplicativos Flatpak do Flathub para uso no seletor fzf.
 function update_cache()
 {
-	echo "Generating cache file, Wait..."
-	flatpak remote-ls flathub --app --columns=name,application | awk -F '\t' '{printf \"%-45s %s\n\",\$1,\$2}' > '$CACHE_FILE'
+	echo -e "${fGreen}Generating cache file, Wait...${fEnd}"
+	flatpak remote-ls flathub --app --columns=name,application | \
+	awk -F '\t' '{printf "%-45s %s\n",$1,$2}' > "$CACHE_FILE"
 
 }
 
-function install_flatpak()
+# Seleciona aplicativos Flatpak usando fzf e retorna os IDs selecionados em um array.
+function select_flatpak()
 {
-	local SELECTED
+	local -n RESULT=$1
 	
-	SELECTED=$(fzf \
+	mapfile -t RESULT < <(
+	fzf \
 	  --multi \
 	  --height=80% \
 	  --layout=reverse \
@@ -56,23 +72,72 @@ function install_flatpak()
 	  --info=inline \
 	  --cycle \
 	  --bind="ctrl-a:select-all,ctrl-d:deselect-all" \
-	  < "$CACHE_FILE"
+	  < "$CACHE_FILE" | awk '{print $NF}'
 	)
-	
-	# Take ID flatpak and build one argument with xargs.
-	SELECTED=$(echo "$SELECTED" | awk '{print $NF}' | xargs)
-	
-	echo "Iniciando Instalação de pacotes!"
-	flatpak install $SELECTED -y
-	
-	read -p "Instalação conclluida com sucesso. [ENTER]" enter
 }
 
+# Instala aplicativos Flatpak selecionados, ignorando pacotes já instalados.
+function install_flatpak()
+{
+	local PACKAGES=()
+
+	select_flatpak PACKAGES
+
+	if [[ ${#PACKAGES[@]} -eq 0 ]]; then
+		return 0
+	fi
+
+	for PACKAGE in "${PACKAGES[@]}"; do
+
+		if flatpak list --app --columns=application | grep -qx "$PACKAGE"; then
+			echo -e "${fGreen}✓ $PACKAGE já está instalado${fEnd}"
+			sleep 1s
+		else
+			echo "Instalando $PACKAGE..."
+			flatpak install flathub "$PACKAGE" -y
+		fi
+
+	done
+}
+
+# Verifica se o cache de aplicativos Flatpak precisa ser atualizado.
+function remove_flatpak()
+{
+	local PACKAGES=() # inicializando
+
+	select_flatpak PACKAGES
+
+	# Algum pacote foi selecionado?
+	if [[ ${#PACKAGES[@]} -eq 0 ]]; then
+		return 0
+	fi
+
+	for PACKAGE in "${PACKAGES[@]}"; do
+		if flatpak list --app --columns=application | grep -qx "$PACKAGE"; then
+			echo "Removendo $PACKAGE..."
+			flatpak uninstall "$PACKAGE" -y
+		else
+			echo -e "${fRed}⚠ $PACKAGE não está instalado${fEnd}"
+			read -n 1 -s -r -p "Pressione qualquer tecla para continuar..."
+		fi
+	done
+}
+
+# Atualiza todos os aplicativos Flatpak instalados.
+function update_flatpak()
+{
+	echo -e "${fGreen}Atualizando Flatpaks...${fEnd}"
+	flatpak update -y
+
+	read -n 1 -s -r -p "Pressione qualquer tecla para continuar..."
+}
+
+# Verifica se o cache expirou e precisa ser regenerado.
 function check_cache_update()
 {
 	local age
 
-	[[ ! -f "$CACHE_FILE" ]] && return  0
+	[[ ! -e "$CACHE_FILE" ]] && return  0
 
 	age=$(( $(date +%s) - $(stat -c %Y "$CACHE_FILE") ))
 	if [[ "$age" -gt "$CACHE_TIME" ]]; then
@@ -83,7 +148,7 @@ function check_cache_update()
 }
 
 #----------------------------------#
-# Tests
+# Testes
 #----------------------------------#
 
 #  Have cache? Or need update? 
@@ -92,8 +157,9 @@ if check_cache_update; then
 fi
 
 #----------------------------------#
-# Main
+# Inicio
 #----------------------------------#
+
 while true; do
 	clear
 	#cache_generate
@@ -104,7 +170,7 @@ while true; do
 	  --border=rounded \
 	  --margin=1 \
 	  --padding=1 \
-	  --prompt="📦 ${PRG} - ${VERSION} > " \
+	  --prompt="📦 ${PRG} - v${VERSION} > " \
 	  --pointer="➜ " \
 	  --header="O que deseja fazer?" \
 	  --info=hidden \
@@ -113,9 +179,8 @@ while true; do
 
 	case "$MENU" in
 		"instalar") install_flatpak ;;
+		"remover") remove_flatpak   ;;
+		"atualizar") update_flatpak ;;
 		"sair" ) exit 0 ;;
-		*) echo "ajuda" ;;
 	esac
 done
-
-
