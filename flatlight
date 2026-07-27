@@ -194,6 +194,12 @@ if check_cache_update; then
 	update_cache
 fi
 
+# Fallback para gettext (suporte à internacionalização).
+# Caso o gettext não esteja instalado, criamos um fallback.
+if ! command -v gettext &>/dev/null; then
+    gettext() { printf '%s' "$1"; }
+fi
+
 #----------------------------------#
 # Inicio
 #----------------------------------#
