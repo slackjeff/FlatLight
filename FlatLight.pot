@@ -1,0 +1,78 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-27 12:03-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: flatlight:62
+msgid "Gerando o arquivo de cache, Aguarde..."
+msgstr ""
+
+#: flatlight:85
+msgid "Selecione os apps para INSTALAR  (TAB check)"
+msgstr ""
+
+#: flatlight:131
+msgid "Já está instalado"
+msgstr ""
+
+#: flatlight:134
+msgid "Instalando"
+msgstr ""
+
+#: flatlight:146 flatlight:203 flatlight:212
+msgid "Remover"
+msgstr ""
+
+#: flatlight:146
+msgid "Selecione os aplicativos para REMOVER (TAB marca)."
+msgstr ""
+
+#: flatlight:155
+msgid "Removendo"
+msgstr ""
+
+#: flatlight:158
+msgid "não está instalado"
+msgstr ""
+
+#: flatlight:159
+msgid "Pressione qualquer tecla para continuar..."
+msgstr ""
+
+#: flatlight:167
+msgid "Atualizando Flatpaks..."
+msgstr ""
+
+#: flatlight:170
+msgid "Pressione qualquer tecla para continuar.."
+msgstr ""
+
+#: flatlight:202 flatlight:211
+msgid "Instalar"
+msgstr ""
+
+#: flatlight:204 flatlight:213
+msgid "Atualizar"
+msgstr ""
+
+#: flatlight:205 flatlight:214
+msgid "Sair"
+msgstr ""
+
+#: flatlight:223
+msgid "O que deseja fazer?"
+msgstr ""

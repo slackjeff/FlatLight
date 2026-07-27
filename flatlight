@@ -11,6 +11,7 @@
 # Dependências:
 #   - flatpak
 #   - fzf
+#   - gettext
 #
 # Recursos:
 #   - Gerar/atualizar cache
@@ -19,7 +20,6 @@
 #   - Atualizar Flatpaks
 #
 #-------------------------------------------------------------------#
-
 
 #----------------------------------#
 # Variaveis Globais
@@ -40,13 +40,26 @@ fPink='\e[35;1m'
 fEnd='\e[m'
 
 #----------------------------------#
+# Suporte a (i18n)
+#----------------------------------#
+export TEXTDOMAIN="${PRG}"
+export TEXTDOMAINDIR="${TEXTDOMAINDIR:-./locale}" # Teste local
+
+if [[ -f "/usr/bin/gettext.sh" ]]; then
+	. /usr/bin/gettext.sh
+else
+	eval_gettext() { echo "$1" ;}
+fi
+
+
+#----------------------------------#
 # Funções
 #----------------------------------#
 
 # Gera/atualiza o CACHE de aplicativos Flatpak do Flathub para uso no seletor fzf.
 function update_cache()
 {
-	echo -e "${fGreen}Generating cache file, Wait...${fEnd}"
+	echo -e "${fGreen}$(gettext "Gerando o arquivo de cache, Aguarde...")${fEnd}"
 	flatpak remote-ls flathub --app --columns=name,application | \
 	awk -F '\t' '{printf "%-45s %s\n",$1,$2}' > "$CACHE_FILE"
 
@@ -69,7 +82,7 @@ function select_flatpak()
     local PROMPT_TEXT="${3:-📦 Apps > }"
     
     # Mensagem que sera exibido para cada tela.
-    local TEXT="${4:-Selecione os aplicativos para INSTALAR (TAB marca). }"
+    local TEXT="${4:-$(gettext "Selecione os apps para INSTALAR  (TAB check)"). }"
 
 	# Qual modo será executado ?
     if [[ "$MODE" == "installed" ]]; then
@@ -115,10 +128,10 @@ function install_flatpak()
 	for PACKAGE in "${PACKAGES[@]}"; do
 
 		if flatpak list --app --columns=application | grep -qx "$PACKAGE"; then
-			echo -e "${fGreen}✓ $PACKAGE já está instalado${fEnd}"
+			echo -e "${fGreen}✓ $PACKAGE $(gettext "Já está instalado")${fEnd}"
 			sleep 1s
 		else
-			echo "Instalando $PACKAGE..."
+			echo "$(gettext "Instalando") $PACKAGE..."
 			flatpak install flathub "$PACKAGE" -y
 		fi
 
@@ -130,7 +143,7 @@ function remove_flatpak()
 {
 	local PACKAGES=() # inicializando
 
-	select_flatpak PACKAGES "installed" "🗑️ Remover > " "Selecione os aplicativos para REMOVER (TAB marca)."
+	select_flatpak PACKAGES "installed" "🗑️ $(gettext "Remover") > " "$(gettext "Selecione os aplicativos para REMOVER (TAB marca).")"
 
 	# Algum pacote foi selecionado?
 	if [[ ${#PACKAGES[@]} -eq 0 ]]; then
@@ -139,11 +152,11 @@ function remove_flatpak()
 
 	for PACKAGE in "${PACKAGES[@]}"; do
 		if flatpak list --app --columns=application | grep -qx "$PACKAGE"; then
-			echo "Removendo $PACKAGE..."
+			echo "$(gettext "Removendo") $PACKAGE..."
 			flatpak uninstall "$PACKAGE"
 		else
-			echo -e "${fRed}⚠ $PACKAGE não está instalado${fEnd}"
-			read -n 1 -s -r -p "Pressione qualquer tecla para continuar..."
+			echo -e "${fRed}⚠ $PACKAGE $(gettext "não está instalado")${fEnd}"
+			read -n 1 -s -r -p "$(gettext "Pressione qualquer tecla para continuar...")"
 		fi
 	done
 }
@@ -151,10 +164,10 @@ function remove_flatpak()
 # Atualiza todos os aplicativos Flatpak instalados.
 function update_flatpak()
 {
-	echo -e "${fGreen}Atualizando Flatpaks...${fEnd}"
+	echo -e "${fGreen}$(gettext "Atualizando Flatpaks...")${fEnd}"
 	flatpak update -y
 
-	read -n 1 -s -r -p "Pressione qualquer tecla para continuar..."
+	read -n 1 -s -r -p "$(gettext "Pressione qualquer tecla para continuar..")"
 }
 
 # Verifica se o cache expirou e precisa ser regenerado.
@@ -185,10 +198,20 @@ fi
 # Inicio
 #----------------------------------#
 
+# Salva as opções traduzidas em variáveis para bater certinho com o case
+OPT_INSTALL="$(gettext "Instalar")"
+OPT_REMOVE="$(gettext "Remover")"
+OPT_UPDATE="$(gettext "Atualizar")"
+OPT_EXIT="$(gettext "Sair")"
+
 while true; do
 	#clear
 	#cache_generate
-	MENU=$(printf "Instalar\nRemover\nAtualizar\nSair" | \
+	MENU=$(printf "%s\n%s\n%s\n%s" \
+      "$(gettext "Instalar")" \
+      "$(gettext "Remover")" \
+      "$(gettext "Atualizar")" \
+      "$(gettext "Sair")" | \
 	fzf \
 	  --height=40% \
 	  --layout=reverse \
@@ -197,15 +220,16 @@ while true; do
 	  --padding=1 \
 	  --prompt="📦 ${PRG} - v${VERSION} > " \
 	  --pointer="➜ " \
-	  --header="O que deseja fazer?" \
+	  --header="$(gettext "O que deseja fazer?")" \
 	  --info=hidden \
 	  --no-multi)
-	MENU=${MENU,,}
+	# Converte para minúsculo
+    MENU=${MENU,,}
 
-	case "$MENU" in
-		"instalar") install_flatpak ;;
-		"remover") remove_flatpak   ;;
-		"atualizar") update_flatpak ;;
-		"sair" ) exit 0 ;;
-	esac
+    case "$MENU" in
+        "${OPT_INSTALL,,}") install_flatpak ;;
+        "${OPT_REMOVE,,}")  remove_flatpak  ;;
+        "${OPT_UPDATE,,}")  update_flatpak ;;
+        "${OPT_EXIT,,}")    exit 0 ;;
+    esac
 done

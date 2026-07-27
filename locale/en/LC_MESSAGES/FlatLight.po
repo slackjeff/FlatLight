@@ -1,0 +1,78 @@
+# English translations for PACKAGE package.
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Jefferson C <slackjeff@slackjeff.com.br>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-27 12:03-0300\n"
+"PO-Revision-Date: 2026-07-27 12:05-0300\n"
+"Last-Translator: Jefferson C <slackjeff@slackjeff.com.br>\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: flatlight:62
+msgid "Gerando o arquivo de cache, Aguarde..."
+msgstr "Gerando o arquivo de cache, Aguarde..."
+
+#: flatlight:85
+msgid "Selecione os apps para INSTALAR  (TAB check)"
+msgstr "Selecione os apps para INSTALAR  (TAB check)"
+
+#: flatlight:131
+msgid "Já está instalado"
+msgstr "Já está instalado"
+
+#: flatlight:134
+msgid "Instalando"
+msgstr "Instalando"
+
+#: flatlight:146 flatlight:203 flatlight:212
+msgid "Remover"
+msgstr "Remover"
+
+#: flatlight:146
+msgid "Selecione os aplicativos para REMOVER (TAB marca)."
+msgstr "Selecione os aplicativos para REMOVER (TAB marca)."
+
+#: flatlight:155
+msgid "Removendo"
+msgstr "Removendo"
+
+#: flatlight:158
+msgid "não está instalado"
+msgstr "não está instalado"
+
+#: flatlight:159
+msgid "Pressione qualquer tecla para continuar..."
+msgstr "Pressione qualquer tecla para continuar..."
+
+#: flatlight:167
+msgid "Atualizando Flatpaks..."
+msgstr "Atualizando Flatpaks..."
+
+#: flatlight:170
+msgid "Pressione qualquer tecla para continuar.."
+msgstr "Pressione qualquer tecla para continuar.."
+
+#: flatlight:202 flatlight:211
+msgid "Instalar"
+msgstr "Instalar"
+
+#: flatlight:204 flatlight:213
+msgid "Atualizar"
+msgstr "Atualizar"
+
+#: flatlight:205 flatlight:214
+msgid "Sair"
+msgstr "Sair"
+
+#: flatlight:223
+msgid "O que deseja fazer?"
+msgstr "O que deseja fazer?"
