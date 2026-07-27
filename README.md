@@ -2,6 +2,9 @@
 
 Um utilitario de linha de comando rapido e interativo para gerenciar pacotes **Flatpak** utilizando **`fzf`**, focado em simplicidade, fluidez e produtividade.
 
+![Inicial](pictures/1.png)
+![Procura Aplicativo](pictures/2.png)
+
 ---
 
 ## Sobre o Projeto
