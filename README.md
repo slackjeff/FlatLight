@@ -36,7 +36,7 @@ Para que o Flatlight funcione corretamente no seu sistema, certifique-se de ter 
 
 1. Clone o repositorio ou baixe o script principal para o seu ambiente:
    ```bash
-   git clone [https://github.com/seu-usuario/flatlight.git](https://github.com/seu-usuario/flatlight.git)
+   git clone https://github.com/slackjeff/FlatLight.git
    cd flatlight
    ```
 2. Torne o script executavel
