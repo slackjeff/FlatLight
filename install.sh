@@ -25,7 +25,7 @@ install -d "$BINDIR"
 install -m 755 "$PRG" "${BINDIR}/${PRG}"
 
 # Instala o i18n
-for mo_file in locale/*/LC_MESSAGES/FlatLight.mo; do
+for mo_file in locale/*/LC_MESSAGES/${PRG}.mo; do
 	[[ -f "${mo_file}" ]] || continue
 	
 	# Extrai a sigla do idioma do caminho locale

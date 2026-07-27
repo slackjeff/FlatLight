@@ -42,10 +42,11 @@ Para que o Flatlight funcione corretamente no seu sistema, certifique-se de ter 
    git clone https://github.com/slackjeff/FlatLight.git
    cd flatlight
    ```
-2. Torne o script executável
+2. Torne o script executável de instalação executável
 
 ```
-chmod +x flatlight
+chmod +x install.sh
+sudo ./install.sh
 ```
 
 ## Roadmap do Projeto
@@ -54,5 +55,24 @@ Este documento descreve os objetivos futuros e o planejamento de evolução
 ## [Planejado]
 * [ ] Melhorar o formato de cache que hoje é simples
 * [ ] Documentação para man (página de manual do sistema)
-* [-] (INICIADO) Internacionalização com gettext
-* [ ] Validação automática de dependências (`fzf` e `flatpak` instalados)
+* [A] INICIADO Internacionalização com gettext
+* [x] Validação automática de dependências (`fzf` e `flatpak` instalados)
+
+
+## Contribuidores THKS ❤
+
+Agradecimento especial a todos que ajudam a tornar o **FlatLight** cada vez melhor!
+
+<a href="https://github.com/slackjeff/FlatLight/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=slackjeff/FlatLight" alt="Lista de Contribuidores" />
+</a>
+
+---
+
+### 🤝 Quer contribuir?
+
+Contribuições de qualquer tipo são super vindas! Seja corrigindo traduções, reportando bugs ou enviando melhorias no código.
+
+- Encontrou um bug? [Abra uma Issue](https://github.com/slackjeff/FlatLight/issues/new)
+- Tem uma ideia massa? [Envie uma Pull Request](https://github.com/slackjeff/FlatLight/pulls)
+- Sabe outro idioma? Ajude a traduzir os arquivos `.po` em `locale/`!

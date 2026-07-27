@@ -5,22 +5,36 @@
 CDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$CDIR" || exit 1
 
-echo "1. Extraindo strings para locale/FlatLight.pot..."
-xgettext --package-name="FlatLight" \
-         --package-version="1.1-alfa" \
+PRG="flatlight"
+POT_FILE="locale/flatlight.pot"
+
+echo "Extraindo strings para ${POT_FILE}..."
+xgettext --package-name="${PRG}" \
+         --package-version="1.3-alfa" \
          --language=Shell \
          --from-code=UTF-8 \
          --keyword=gettext \
          --keyword=eval_gettext \
-         -o locale/FlatLight.pot \
-         flatlight
+         -o "${POT_FILE}" \
+         "${PRG}"
 
-echo "2. Mesclando atualizações nos arquivos .po..."
-if [[ -f locale/en/LC_MESSAGES/FlatLight.po ]]; then
-    msgmerge --update locale/en/LC_MESSAGES/FlatLight.po locale/FlatLight.pot
-fi
+# Garante que o loop não falhe se não houver arquivos
+shopt -s nullglob
 
-echo "3. Compilando os arquivos .mo..."
-msgfmt locale/en/LC_MESSAGES/FlatLight.po -o locale/en/LC_MESSAGES/FlatLight.mo
+echo "Processando traduções encontradas em locale/..."
 
-echo "Feito! Tradução atualizada e compilada com sucesso."
+for po_file in locale/*/LC_MESSAGES/"${PRG}".po; do
+    # Extrai o idioma a partir do caminho (ex: locale/es/LC_MESSAGES/flatlight.po -> es)
+    lang=$(echo "$po_file" | cut -d'/' -f2)
+    mo_file="locale/${lang}/LC_MESSAGES/${PRG}.mo"
+
+    echo "==> [${lang}] Mesclando atualizações no .po..."
+    msgmerge --update "$po_file" "$POT_FILE"
+
+    echo "==> [${lang}] Compilando para .mo..."
+    msgfmt "$po_file" -o "$mo_file"
+done
+
+shopt -u nullglob
+
+echo "Feito! Todos os idiomas foram atualizados e compilados com sucesso."

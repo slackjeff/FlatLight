@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FlatLight 1.1-alfa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-27 13:40-0300\n"
+"POT-Creation-Date: 2026-07-27 16:06-0300\n"
 "PO-Revision-Date: 2026-07-27 12:05-0300\n"
 "Last-Translator: Jefferson Carneiro <slackjeff@slackjeff.com.br>\n"
 "Language-Team: English\n"
@@ -18,62 +18,62 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #
-#: flatlight:68
+#: flatlight:75
 msgid "Erro: utilitário não está instalado:"
 msgstr "Error: the utility is not installed:"
 
-#: flatlight:80
+#: flatlight:89
 msgid "Gerando o arquivo de cache, Aguarde..."
 msgstr "Generating cache file, wait..."
 
-#: flatlight:103
+#: flatlight:112
 msgid "Selecione os aplicativos para INSTALAR <TAB seleciona múltiplos>."
 msgstr "Select applications to INSTALL <TAB select multiples>"
 
-#: flatlight:149
+#: flatlight:158
 msgid "Já está instalado"
 msgstr "is already installed"
 
-#: flatlight:152
+#: flatlight:161
 msgid "Instalando"
 msgstr "Installing"
 
-#: flatlight:164 flatlight:221 flatlight:230
+#: flatlight:173 flatlight:234 flatlight:243
 msgid "Remover"
 msgstr "Remove"
 
-#: flatlight:164
+#: flatlight:173
 msgid "Selecione os aplicativos para REMOVER (TAB marca)."
 msgstr "Select applications to REMOVE (TAB selects)."
 
-#: flatlight:173
+#: flatlight:182
 msgid "Removendo"
 msgstr "Removing"
 
-#: flatlight:176
+#: flatlight:185
 msgid "não está instalado"
 msgstr "is not installed"
 
-#: flatlight:177 flatlight:188
+#: flatlight:186 flatlight:197
 msgid "Pressione qualquer tecla para continuar..."
 msgstr "Press any key to continue..."
 
-#: flatlight:185
+#: flatlight:194
 msgid "Atualizando Flatpaks..."
 msgstr "Updating Flatpaks..."
 
-#: flatlight:220 flatlight:229
+#: flatlight:233 flatlight:242
 msgid "Instalar"
 msgstr "Install"
 
-#: flatlight:222 flatlight:231
+#: flatlight:235 flatlight:244
 msgid "Atualizar"
 msgstr "Update"
 
-#: flatlight:223 flatlight:232
+#: flatlight:236 flatlight:245
 msgid "Sair"
 msgstr "Exit"
 
-#: flatlight:241
+#: flatlight:254
 msgid "O que deseja fazer?"
 msgstr "What do you want to do?"
