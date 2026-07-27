@@ -20,9 +20,11 @@
 #
 #-------------------------------------------------------------------#
 
+#####################################
 #----------------------------------#
 # Variaveis Globais
 #----------------------------------#
+#####################################
 export PRG="FlatLight"
 export VERSION="1.2-alfa"
 export CACHE_FILE="${HOME}/.cache/${PRG}-flathub.cache"
@@ -38,9 +40,11 @@ fBlue='\e[34;1m'
 fPink='\e[35;1m'
 fEnd='\e[m'
 
+#####################################
 #----------------------------------#
 # Suporte a (i18n)
 #----------------------------------#
+#####################################
 export TEXTDOMAIN="${PRG}"
 export TEXTDOMAINDIR="${TEXTDOMAINDIR:-./locale}" # Teste local
 
@@ -57,9 +61,12 @@ if ! declare -f eval_gettext &>/dev/null; then
     eval_gettext() { eval "echo -n \"$1\""; }
 fi
 
+#####################################
 #----------------------------------#
 # Verificações
 #----------------------------------#
+#####################################
+
 
 # Sanity
 for dep in 'flatpak' 'fzf' 'awk'; do
@@ -70,9 +77,11 @@ for dep in 'flatpak' 'fzf' 'awk'; do
 	fi
 done
 
+#####################################
 #----------------------------------#
 # Funções
 #----------------------------------#
+#####################################
 
 # Gera/atualiza o CACHE de aplicativos Flatpak do Flathub para uso no seletor fzf.
 function update_cache()
@@ -203,18 +212,22 @@ function check_cache_update()
 	fi
 }
 
+#####################################
 #----------------------------------#
-# Testes
+# Cache
 #----------------------------------#
+#####################################
 
 #  Have cache? Or need update? 
 if check_cache_update; then
 	update_cache
 fi
 
+#####################################
 #----------------------------------#
 # Inicio
 #----------------------------------#
+#####################################
 
 # Salva as opções traduzidas em variáveis para bater certinho com o case
 OPT_INSTALL="$(gettext "Instalar")"
