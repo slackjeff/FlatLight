@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FlatLight 1.1-alfa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-27 13:02-0300\n"
+"POT-Creation-Date: 2026-07-27 13:42-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,62 +17,62 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: flatlight:62
+#: flatlight:68
+msgid "Erro: utilitário não está instalado:"
+msgstr ""
+
+#: flatlight:80
 msgid "Gerando o arquivo de cache, Aguarde..."
 msgstr ""
 
-#: flatlight:85
+#: flatlight:103
 msgid "Selecione os aplicativos para INSTALAR <TAB seleciona múltiplos>."
 msgstr ""
 
-#: flatlight:131
+#: flatlight:149
 msgid "Já está instalado"
 msgstr ""
 
-#: flatlight:134
+#: flatlight:152
 msgid "Instalando"
 msgstr ""
 
-#: flatlight:146 flatlight:203 flatlight:212
+#: flatlight:164 flatlight:221 flatlight:230
 msgid "Remover"
 msgstr ""
 
-#: flatlight:146
+#: flatlight:164
 msgid "Selecione os aplicativos para REMOVER (TAB marca)."
 msgstr ""
 
-#: flatlight:155
+#: flatlight:173
 msgid "Removendo"
 msgstr ""
 
-#: flatlight:158
+#: flatlight:176
 msgid "não está instalado"
 msgstr ""
 
-#: flatlight:159
+#: flatlight:177 flatlight:188
 msgid "Pressione qualquer tecla para continuar..."
 msgstr ""
 
-#: flatlight:167
+#: flatlight:185
 msgid "Atualizando Flatpaks..."
 msgstr ""
 
-#: flatlight:170
-msgid "Pressione qualquer tecla para continuar.."
-msgstr ""
-
-#: flatlight:202 flatlight:211
+#: flatlight:220 flatlight:229
 msgid "Instalar"
 msgstr ""
 
-#: flatlight:204 flatlight:213
+#: flatlight:222 flatlight:231
 msgid "Atualizar"
 msgstr ""
 
-#: flatlight:205 flatlight:214
+#: flatlight:223 flatlight:232
 msgid "Sair"
 msgstr ""
 
-#: flatlight:223
+#: flatlight:241
 msgid "O que deseja fazer?"
 msgstr ""

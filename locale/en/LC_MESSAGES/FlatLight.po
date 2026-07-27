@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FlatLight 1.1-alfa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-27 13:02-0300\n"
+"POT-Creation-Date: 2026-07-27 13:40-0300\n"
 "PO-Revision-Date: 2026-07-27 12:05-0300\n"
 "Last-Translator: Jefferson Carneiro <slackjeff@slackjeff.com.br>\n"
 "Language-Team: English\n"
@@ -17,63 +17,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: flatlight:62
+#
+#: flatlight:68
+msgid "Erro: utilitário não está instalado:"
+msgstr "Error: the utility is not installed:"
+
+#: flatlight:80
 msgid "Gerando o arquivo de cache, Aguarde..."
 msgstr "Generating cache file, wait..."
 
-#: flatlight:85
+#: flatlight:103
 msgid "Selecione os aplicativos para INSTALAR <TAB seleciona múltiplos>."
 msgstr "Select applications to INSTALL <TAB select multiples>"
 
-#: flatlight:131
+#: flatlight:149
 msgid "Já está instalado"
 msgstr "is already installed"
 
-#: flatlight:134
+#: flatlight:152
 msgid "Instalando"
 msgstr "Installing"
 
-#: flatlight:146 flatlight:203 flatlight:212
+#: flatlight:164 flatlight:221 flatlight:230
 msgid "Remover"
 msgstr "Remove"
 
-#: flatlight:146
+#: flatlight:164
 msgid "Selecione os aplicativos para REMOVER (TAB marca)."
 msgstr "Select applications to REMOVE (TAB selects)."
 
-#: flatlight:155
+#: flatlight:173
 msgid "Removendo"
 msgstr "Removing"
 
-#: flatlight:158
+#: flatlight:176
 msgid "não está instalado"
 msgstr "is not installed"
 
-#: flatlight:159
+#: flatlight:177 flatlight:188
 msgid "Pressione qualquer tecla para continuar..."
 msgstr "Press any key to continue..."
 
-#: flatlight:167
+#: flatlight:185
 msgid "Atualizando Flatpaks..."
 msgstr "Updating Flatpaks..."
 
-#: flatlight:170
-#, fuzzy
-msgid "Pressione qualquer tecla para continuar.."
-msgstr "Press any key to continue..."
-
-#: flatlight:202 flatlight:211
+#: flatlight:220 flatlight:229
 msgid "Instalar"
 msgstr "Install"
 
-#: flatlight:204 flatlight:213
+#: flatlight:222 flatlight:231
 msgid "Atualizar"
 msgstr "Update"
 
-#: flatlight:205 flatlight:214
+#: flatlight:223 flatlight:232
 msgid "Sair"
 msgstr "Exit"
 
-#: flatlight:223
+#: flatlight:241
 msgid "O que deseja fazer?"
 msgstr "What do you want to do?"

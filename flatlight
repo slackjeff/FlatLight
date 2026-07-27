@@ -11,7 +11,6 @@
 # Dependências:
 #   - flatpak
 #   - fzf
-#   - gettext
 #
 # Recursos:
 #   - Gerar/atualizar cache
@@ -25,7 +24,7 @@
 # Variaveis Globais
 #----------------------------------#
 export PRG="FlatLight"
-export VERSION="1.1-alfa"
+export VERSION="1.2-alfa"
 export CACHE_FILE="${HOME}/.cache/${PRG}-flathub.cache"
 #
 # Define o tempo (em segundos) para atualização do cache do Flathub.
@@ -45,12 +44,31 @@ fEnd='\e[m'
 export TEXTDOMAIN="${PRG}"
 export TEXTDOMAINDIR="${TEXTDOMAINDIR:-./locale}" # Teste local
 
-if [[ -f "/usr/bin/gettext.sh" ]]; then
-	. /usr/bin/gettext.sh
-else
-	eval_gettext() { echo "$1" ;}
+# Tenta carregar biblioteca do sistema (se existir)
+[[ -f "/usr/bin/gettext.sh" ]] && source /usr/bin/gettext.sh
+[[ -f "/usr/share/gettext/gettext.sh" ]] && source /usr/share/gettext/gettext.sh
+
+# Fallbacks nativos em pure Bash se o gettext não estiver instalado
+if ! command -v gettext &>/dev/null; then
+    gettext() { printf '%s' "$1"; }
 fi
 
+if ! declare -f eval_gettext &>/dev/null; then
+    eval_gettext() { eval "echo -n \"$1\""; }
+fi
+
+#----------------------------------#
+# Verificações
+#----------------------------------#
+
+# Sanity
+for dep in 'flatpak' 'fzf' 'awk'; do
+	export dep
+	if ! command -v "$dep" &>/dev/null; then
+		printf "${fRed}$(gettext "Erro: utilitário não está instalado:") $dep ${fEnd}\n"
+		exit 1
+	fi
+done
 
 #----------------------------------#
 # Funções
@@ -194,12 +212,6 @@ if check_cache_update; then
 	update_cache
 fi
 
-# Fallback para gettext (suporte à internacionalização).
-# Caso o gettext não esteja instalado, criamos um fallback.
-if ! command -v gettext &>/dev/null; then
-    gettext() { printf '%s' "$1"; }
-fi
-
 #----------------------------------#
 # Inicio
 #----------------------------------#
@@ -229,6 +241,10 @@ while true; do
 	  --header="$(gettext "O que deseja fazer?")" \
 	  --info=hidden \
 	  --no-multi)
+	  
+	# Se o usuário der ESC ou Ctrl+C no fzf, cancela e sai
+    [[ -z "$MENU" ]] && exit 0
+    
 	# Converte para minúsculo
     MENU=${MENU,,}
 
