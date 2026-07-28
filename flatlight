@@ -128,6 +128,7 @@ function select_flatpak()
           --multi \
           --height=80% \
           --layout=reverse \
+	  --preview "" \
           --border \
           --margin=1 \
           --padding=1 \
@@ -253,6 +254,7 @@ while true; do
 	  --pointer="➜ " \
 	  --header="$(gettext "O que deseja fazer?")" \
 	  --info=hidden \
+	  --preview "" \
 	  --no-multi)
 	  
 	# Se o usuário der ESC ou Ctrl+C no fzf, cancela e sai
