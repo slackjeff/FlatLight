@@ -1,0 +1,49 @@
+.TH "FLATLIGHT" "1" "2026-07-26" "FlatLight" "Gerenciamento de Pacotes"
+.SH NOME
+Flatlight \- Um utilitário TUI para gerenciar Flatpaks, focado em simplicidade, fluidez e produtividade
+.SH SINOPSE
+.SY
+.B flatlight [\fINenhum argumento necessário\/\fR]
+.YS
+.SH DESCRIÇÃO
+.nf
+O \f[B]Flatlight\f[R] nasceu da necessidade de tornar o gerenciamento de aplicativos Flatpak mais ágil e intuitivo diretamente pelo terminal. 
+Em vez de lidar com comandos longos ou interfaces graficas pesadas, o \f[B]Flatlight\f[R] combina a velocidade dos scripts Bash com uma interface de seleção em texto rico (TUI) alimentada pelo \f[B]fzf\f[R].
+.fi
+Com ele, é possivel \f[B]buscar\f[R], \f[B]instalar\f[R] e \f[B]remover\f[R] multiplos aplicativos de forma simultânea e integrada ao Flathub.
+.SH OPÇÕES
+Quando se abre o \f[B]FlatLight\f[R], é se mostrado um menu interátivo com as opções: \f[B]Instalar\f[R], \f[B]Remover\f[R], \f[B]Atualizar\f[R] e \f[B]Sair\f[R]
+.SS Instalar
+O usuário pode escolher os aplicativos que deseja instalar.
+.SS Remover
+O usuário é recebido com uma lista dos aplicativos já instalados, e assim podendo selecionaar os aplicativos que deseja remover.
+.SS Atualizar
+Executa automáticamente uma atualização nos flatpaks do sistema, (basicamente executa o comando: "flatpak update").
+.SS Sair
+O usuário sai/encerra o programa.
+.SH USO
+\f[B]Flatlight\f[R] usa o programa \f[B]fzf\f[R] para navegar por uma lista organizada de aplicativos com suporte a busca em tempo real.
+.SS Seleção Multipla
+É possível marcar varios aplicativos de uma só vez usando a tecla \fITAB\/\fR para processá-los em lote.
+.SS Alternancia Inteligente (Toggle)
+.nf
+A mesma interface detecta automaticamente o estado do aplicativo \- se já estiver instalado, o \f[B]Flatlight\f[R] realiza a remoção; caso contrário, executa a instalação.
+.fi
+.SS Atalhos Uteis
+\f[B]Ctrl+A\f[R] \fIseleciona\/\fR todos os itens instantaniamente
+.sp
+\f[B]Ctrl+D\f[R] \fIdesmarca\/\fR todos os itens instantaniamente
+.SH CONTRIBUIÇÕES
+Contribuições de qualquer tipo são super vindas! Seja corrigindo traduções, reportando bugs ou enviando melhorias no código.
+.IP \(bu 3
+.UE
+Encontrou um bug? Abra uma Issue (https://github.com/slackjeff/FlatLight/issues/new)
+.UE
+.IP \(bu 3
+Tem uma ideia massa? Envie uma Pull Request (https://github.com/slackjeff/FlatLight/pulls)
+.IP \(bu 3
+Sabe outro idioma? Ajude a traduzir os arquivos .po em locale/!
+.SH AUTOR
+\f[B]Jefferson Carneiro - Slackjeff <slackjeff@slackjeff.com.br>\f[R]
+.sp
+\f[B]Repositório original: https://github.com/slackjeff/FlatLight\f[R]
