@@ -54,11 +54,11 @@ export TEXTDOMAINDIR="${TEXTDOMAINDIR:-./locale}" # Teste local
 
 # Fallbacks nativos em pure Bash se o gettext não estiver instalado
 if ! command -v gettext &>/dev/null; then
-    gettext() { printf '%s' "$1"; }
+  gettext() { printf '%s' "$1"; }
 fi
 
 if ! declare -f eval_gettext &>/dev/null; then
-    eval_gettext() { eval "echo -n \"$1\""; }
+  eval_gettext() { eval "echo -n \"$1\""; }
 fi
 
 #####################################
@@ -67,14 +67,13 @@ fi
 #----------------------------------#
 #####################################
 
-
 # Sanity
 for dep in 'flatpak' 'fzf' 'awk'; do
-	export dep
-	if ! command -v "$dep" &>/dev/null; then
-		printf "${fRed}$(gettext "Erro: utilitário não está instalado:") $dep ${fEnd}\n"
-		exit 1
-	fi
+  export dep
+  if ! command -v "$dep" &>/dev/null; then
+    printf "${fRed}$(gettext "Erro: utilitário não está instalado:") $dep ${fEnd}\n"
+    exit 1
+  fi
 done
 
 #####################################
@@ -84,132 +83,127 @@ done
 #####################################
 
 # Gera/atualiza o CACHE de aplicativos Flatpak do Flathub para uso no seletor fzf.
-function update_cache()
-{
-	echo -e "${fGreen}$(gettext "Gerando o arquivo de cache, Aguarde...")${fEnd}"
-	flatpak remote-ls flathub --app --columns=name,application | \
-	awk -F '\t' '{printf "%-45s %s\n",$1,$2}' > "$CACHE_FILE"
+function update_cache() {
+  echo -e "${fGreen}$(gettext "Gerando o arquivo de cache, Aguarde...")${fEnd}"
+  flatpak remote-ls flathub --app --columns=name,application |
+    awk -F '\t' '{printf "%-45s %s\n",$1,$2}' >"$CACHE_FILE"
 
 }
 
 # Função modular para fazer listagem dos apps. É utilizado pelas funções:
 # - install_flatpak
 # - remove_flatpak
-function select_flatpak()
-{
-    local -n RESULT=$1
-    
-    # Modo cache por padrão ou installed para instalados no sistema
-    local MODE="${2:-cache}"
-    
-    # Necessário para saber o modo que sera rodado a lista com mapfile.
-    local INPUT_CMD
-    
-    # Estilo do prompt.
-    local PROMPT_TEXT="${3:-📦 Apps > }"
-    
-    # Mensagem que sera exibido para cada tela.
-    local TEXT="${4:-$(gettext "Selecione os aplicativos para INSTALAR <TAB seleciona múltiplos>.")}"
+function select_flatpak() {
+  local -n RESULT=$1
 
-	# Qual modo será executado ?
-    if [[ "$MODE" == "installed" ]]; then
-		# Listagem de apps instalados na máquina do usuário para remoção.
-        INPUT_CMD="flatpak list --app --columns=name,application | awk -F '\t' '{printf \"%-45s %s\n\",\$1,\$2}'"
-    else
-		# Puxa do arquivo de cache do usuario todos apps. (Usuado para instalação)
-        INPUT_CMD="cat \"$CACHE_FILE\""
-    fi
+  # Modo cache por padrão ou installed para instalados no sistema
+  local MODE="${2:-cache}"
 
-	# !!! FIXME !!!
-	# Precisamos usar o 'eval' para não duplicar esse trecho do mapfile + fzf.
-	# Podemos melhorar para evitar o uso do eval...
-	    mapfile -t RESULT < <(
-        eval "$INPUT_CMD" | fzf \
-          --multi \
-          --height=80% \
-          --layout=reverse \
-          --border \
-          --margin=1 \
-          --padding=1 \
-          --prompt="$PROMPT_TEXT" \
-          --pointer="➜" \
-          --marker="✓" \
-          --header="${TEXT}" \
-          --info=inline \
-          --cycle \
-          --bind="ctrl-a:select-all,ctrl-d:deselect-all" | awk '{print $NF}'
-    )
+  # Necessário para saber o modo que sera rodado a lista com mapfile.
+  local INPUT_CMD
+
+  # Estilo do prompt.
+  local PROMPT_TEXT="${3:-📦 Apps > }"
+
+  # Mensagem que sera exibido para cada tela.
+  local TEXT="${4:-$(gettext "Selecione os aplicativos para INSTALAR <TAB seleciona múltiplos>.")}"
+
+  # Qual modo será executado ?
+  if [[ "$MODE" == "installed" ]]; then
+    # Listagem de apps instalados na máquina do usuário para remoção.
+    INPUT_CMD="flatpak list --app --columns=name,application | awk -F '\t' '{printf \"%-45s %s\n\",\$1,\$2}'"
+  else
+    # Puxa do arquivo de cache do usuario todos apps. (Usuado para instalação)
+    INPUT_CMD="cat \"$CACHE_FILE\""
+  fi
+
+  # !!! FIXME !!!
+  # Precisamos usar o 'eval' para não duplicar esse trecho do mapfile + fzf.
+  # Podemos melhorar para evitar o uso do eval...
+  mapfile -t RESULT < <(
+    eval "$INPUT_CMD" | fzf \
+      --multi \
+      --height=80% \
+      --layout=reverse \
+      --border \
+      --margin=1 \
+      --padding=1 \
+      --prompt="$PROMPT_TEXT" \
+      --pointer="➜" \
+      --marker="✓" \
+      --header="${TEXT}" \
+      --info=inline \
+      --cycle \
+      --preview "" \
+      --bind="ctrl-a:select-all,ctrl-d:deselect-all" | awk '{print $NF}'
+  )
 }
 
 # INSTALA aplicativos Flatpak selecionados, ignorando pacotes já instalados.
-function install_flatpak()
-{
-	local PACKAGES=()
+function install_flatpak() {
+  local PACKAGES=()
 
-	select_flatpak PACKAGES
+  select_flatpak PACKAGES
 
-	if [[ ${#PACKAGES[@]} -eq 0 ]]; then
-		return 0
-	fi
+  if [[ ${#PACKAGES[@]} -eq 0 ]]; then
+    return 0
+  fi
 
-	for PACKAGE in "${PACKAGES[@]}"; do
+  for PACKAGE in "${PACKAGES[@]}"; do
 
-		if flatpak list --app --columns=application | grep -qx "$PACKAGE"; then
-			echo -e "${fGreen}✓ $PACKAGE $(gettext "Já está instalado")${fEnd}"
-			sleep 1s
-		else
-			echo "$(gettext "Instalando") $PACKAGE..."
-			flatpak install flathub "$PACKAGE" -y
-		fi
+    if flatpak list --app --columns=application | grep -qx "$PACKAGE"; then
+      echo -e "${fGreen}✓ $PACKAGE $(gettext "Já está instalado")${fEnd}"
+      sleep 1s
+    else
+      echo "$(gettext "Instalando") $PACKAGE..."
+      flatpak install flathub "$PACKAGE" -y
+    fi
 
-	done
+  done
 }
 
 # REMOVE aplicativos flatpak da máquina do usuário.
-function remove_flatpak()
-{
-	local PACKAGES=() # inicializando
+function remove_flatpak() {
+  local PACKAGES=() # inicializando
 
-	select_flatpak PACKAGES "installed" "🗑️ $(gettext "Remover") > " "$(gettext "Selecione os aplicativos para REMOVER (TAB marca).")"
+  select_flatpak PACKAGES "installed" "🗑️ $(gettext "Remover") > " "$(gettext "Selecione os aplicativos para REMOVER (TAB marca).")"
 
-	# Algum pacote foi selecionado?
-	if [[ ${#PACKAGES[@]} -eq 0 ]]; then
-		return 0
-	fi
+  # Algum pacote foi selecionado?
+  if [[ ${#PACKAGES[@]} -eq 0 ]]; then
+    return 0
+  fi
 
-	for PACKAGE in "${PACKAGES[@]}"; do
-		if flatpak list --app --columns=application | grep -qx "$PACKAGE"; then
-			echo "$(gettext "Removendo") $PACKAGE..."
-			flatpak uninstall "$PACKAGE"
-		else
-			echo -e "${fRed}⚠ $PACKAGE $(gettext "não está instalado")${fEnd}"
-			read -n 1 -s -r -p "$(gettext "Pressione qualquer tecla para continuar...")"
-		fi
-	done
+  for PACKAGE in "${PACKAGES[@]}"; do
+    if flatpak list --app --columns=application | grep -qx "$PACKAGE"; then
+      echo "$(gettext "Removendo") $PACKAGE..."
+      flatpak uninstall "$PACKAGE"
+    else
+      echo -e "${fRed}⚠ $PACKAGE $(gettext "não está instalado")${fEnd}"
+      read -n 1 -s -r -p "$(gettext "Pressione qualquer tecla para continuar...")"
+    fi
+  done
 }
 
 # Atualiza todos os aplicativos Flatpak instalados.
-function update_flatpak()
-{
-	echo -e "${fGreen}$(gettext "Atualizando Flatpaks...")${fEnd}"
-	flatpak update -y
+function update_flatpak() {
+  echo -e "${fGreen}$(gettext "Atualizando Flatpaks...")${fEnd}"
+  flatpak update -y
 
-	read -n 1 -s -r -p "$(gettext "Pressione qualquer tecla para continuar...")"
+  read -n 1 -s -r -p "$(gettext "Pressione qualquer tecla para continuar...")"
 }
 
 # Verifica se o cache expirou e precisa ser regenerado.
-function check_cache_update()
-{
-	local age
+function check_cache_update() {
+  local age
 
-	[[ ! -e "$CACHE_FILE" ]] && return  0
+  [[ ! -e "$CACHE_FILE" ]] && return 0
 
-	age=$(( $(date +%s) - $(stat -c %Y "$CACHE_FILE") ))
-	if [[ "$age" -gt "$CACHE_TIME" ]]; then
-		return 0
-	else
-		return 1
-	fi
+  age=$(($(date +%s) - $(stat -c %Y "$CACHE_FILE")))
+  if [[ "$age" -gt "$CACHE_TIME" ]]; then
+    return 0
+  else
+    return 1
+  fi
 }
 
 #####################################
@@ -218,9 +212,9 @@ function check_cache_update()
 #----------------------------------#
 #####################################
 
-#  Have cache? Or need update? 
+#  Have cache? Or need update?
 if check_cache_update; then
-	update_cache
+  update_cache
 fi
 
 #####################################
@@ -236,35 +230,36 @@ OPT_UPDATE="$(gettext "Atualizar")"
 OPT_EXIT="$(gettext "Sair")"
 
 while true; do
-	#clear
-	#cache_generate
-	MENU=$(printf "%s\n%s\n%s\n%s" \
-      "$(gettext "Instalar")" \
-      "$(gettext "Remover")" \
-      "$(gettext "Atualizar")" \
-      "$(gettext "Sair")" | \
-	fzf \
-	  --height=40% \
-	  --layout=reverse \
-	  --border=rounded \
-	  --margin=1 \
-	  --padding=1 \
-	  --prompt="📦 ${PRG} - v${VERSION} > " \
-	  --pointer="➜ " \
-	  --header="$(gettext "O que deseja fazer?")" \
-	  --info=hidden \
-	  --no-multi)
-	  
-	# Se o usuário der ESC ou Ctrl+C no fzf, cancela e sai
-    [[ -z "$MENU" ]] && exit 0
-    
-	# Converte para minúsculo
-    MENU=${MENU,,}
+  #clear
+  #cache_generate
+  MENU=$(printf "%s\n%s\n%s\n%s" \
+    "$(gettext "Instalar")" \
+    "$(gettext "Remover")" \
+    "$(gettext "Atualizar")" \
+    "$(gettext "Sair")" |
+    fzf \
+      --height=40% \
+      --layout=reverse \
+      --border=rounded \
+      --margin=1 \
+      --padding=1 \
+      --prompt="📦 ${PRG} - v${VERSION} > " \
+      --pointer="➜ " \
+      --header="$(gettext "O que deseja fazer?")" \
+      --info=hidden \
+      --preview "" \
+      --no-multi)
 
-    case "$MENU" in
-        "${OPT_INSTALL,,}") install_flatpak ;;
-        "${OPT_REMOVE,,}")  remove_flatpak  ;;
-        "${OPT_UPDATE,,}")  update_flatpak ;;
-        "${OPT_EXIT,,}")    exit 0 ;;
-    esac
+  # Se o usuário der ESC ou Ctrl+C no fzf, cancela e sai
+  [[ -z "$MENU" ]] && exit 0
+
+  # Converte para minúsculo
+  MENU=${MENU,,}
+
+  case "$MENU" in
+  "${OPT_INSTALL,,}") install_flatpak ;;
+  "${OPT_REMOVE,,}") remove_flatpak ;;
+  "${OPT_UPDATE,,}") update_flatpak ;;
+  "${OPT_EXIT,,}") exit 0 ;;
+  esac
 done
