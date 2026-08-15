@@ -86,9 +86,24 @@ done
 # Gera/atualiza o CACHE de aplicativos Flatpak do Flathub para uso no seletor fzf.
 function update_cache()
 {
+	local temp
+
 	echo -e "${fGreen}$(gettext "Gerando o arquivo de cache, Aguarde...")${fEnd}"
+
+	mkdir -p "$(dirname "$CACHE_FILE")" || return 1
+	temp=$(mktemp "${CACHE_FILE}.XXXXXX") || return 1
+
 	flatpak remote-ls flathub --app --columns=name,application | \
-	awk -F '\t' '{printf "%-45s %s\n",$1,$2}' > "$CACHE_FILE"
+	awk -F '\t' '{printf "%-45s %s\n",$1,$2}' > "$temp"
+
+	if [[ -s "$temp" ]]; then
+		mv -f "$temp" "$CACHE_FILE"
+	else
+		rm -f "$temp"
+		echo -e "${fRed}$(gettext "Falha ao gerar o cache.")${fEnd}"
+		read -n 1 -s -r -p "$(gettext "Pressione qualquer tecla para continuar...")"
+		return 1
+	fi
 
 }
 
@@ -203,7 +218,7 @@ function check_cache_update()
 {
 	local age
 
-	[[ ! -e "$CACHE_FILE" ]] && return  0
+	[[ ! -s "$CACHE_FILE" ]] && return 0
 
 	age=$(( $(date +%s) - $(stat -c %Y "$CACHE_FILE") ))
 	if [[ "$age" -gt "$CACHE_TIME" ]]; then
@@ -215,12 +230,24 @@ function check_cache_update()
 
 #####################################
 #----------------------------------#
+# Argumentos
+#----------------------------------#
+#####################################
+
+case "$1" in
+	-h|--help)    printf '%s %s [-u|--update-cache] [-v|--version] [-h|--help]\n' \
+	                     "$(gettext "Uso:")" "$PRG"; exit 0 ;;
+	-v|--version) printf '%s %s\n' "$PRG" "$VERSION"; exit 0 ;;
+esac
+
+#####################################
+#----------------------------------#
 # Cache
 #----------------------------------#
 #####################################
 
 #  Have cache? Or need update? 
-if check_cache_update; then
+if [[ "$1" == "-u" || "$1" == "--update-cache" ]] || check_cache_update; then
 	update_cache
 fi
 
@@ -238,7 +265,6 @@ OPT_EXIT="$(gettext "Sair")"
 
 while true; do
 	#clear
-	#cache_generate
 	MENU=$(printf "%s\n%s\n%s\n%s" \
       "$(gettext "Instalar")" \
       "$(gettext "Remover")" \

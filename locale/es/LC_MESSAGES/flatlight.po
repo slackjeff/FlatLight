@@ -26,6 +26,14 @@ msgstr "Error: la utilidad no está instalada:"
 msgid "Gerando o arquivo de cache, Aguarde..."
 msgstr "Generando el archivo de caché, espere..."
 
+#: flatlight:103
+msgid "Falha ao gerar o cache."
+msgstr "Error al generar la caché."
+
+#: flatlight:239
+msgid "Uso:"
+msgstr "Uso:"
+
 #: flatlight:112
 msgid "Selecione os aplicativos para INSTALAR <TAB seleciona múltiplos>."
 msgstr "Seleccione las aplicaciones para INSTALAR <TAB selecciona múltiples>."
