@@ -3,7 +3,10 @@
 Flatlight \- Um utilitário TUI para gerenciar Flatpaks, focado em simplicidade, fluidez e produtividade
 .SH SINOPSE
 .SY
-.B flatlight [\fINenhum argumento necessário\/\fR]
+.B flatlight
+[\fB\-u\fR|\fB\-\-update\-cache\fR]
+[\fB\-v\fR|\fB\-\-version\fR]
+[\fB\-h\fR|\fB\-\-help\fR]
 .YS
 .SH DESCRIÇÃO
 .nf
@@ -12,6 +15,17 @@ Em vez de lidar com comandos longos ou interfaces graficas pesadas, o \f[B]Flatl
 .fi
 Com ele, é possivel \f[B]buscar\f[R], \f[B]instalar\f[R] e \f[B]remover\f[R] multiplos aplicativos de forma simultânea e integrada ao Flathub.
 .SH OPÇÕES
+.SS Linha de comando
+.TP
+\fB\-u\fR, \fB\-\-update\-cache\fR
+Regenera o cache de aplicativos do Flathub antes de abrir o menu, ignorando o intervalo normal de 24 horas.
+.TP
+\fB\-v\fR, \fB\-\-version\fR
+Mostra a versão do programa e encerra.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Mostra uma mensagem breve de uso e encerra.
+.SS Menu interativo
 Quando se abre o \f[B]FlatLight\f[R], é se mostrado um menu interátivo com as opções: \f[B]Instalar\f[R], \f[B]Remover\f[R], \f[B]Atualizar\f[R] e \f[B]Sair\f[R]
 .SS Instalar
 O usuário pode escolher os aplicativos que deseja instalar.
@@ -33,6 +47,10 @@ A mesma interface detecta automaticamente o estado do aplicativo \- se já estiv
 \f[B]Ctrl+A\f[R] \fIseleciona\/\fR todos os itens instantaniamente
 .sp
 \f[B]Ctrl+D\f[R] \fIdesmarca\/\fR todos os itens instantaniamente
+.SH ARQUIVOS
+.TP
+\fI~/.cache/flatlight\-flathub.cache\fR
+Lista de aplicativos do Flathub usada na tela de instalação. É regenerada automaticamente quando tem mais de 24 horas, ou sob demanda com \fB\-\-update\-cache\fR. Se a geração falhar (por exemplo, sem conexão), o cache anterior é preservado.
 .SH CONTRIBUIÇÕES
 Contribuições de qualquer tipo são super vindas! Seja corrigindo traduções, reportando bugs ou enviando melhorias no código.
 .IP \(bu 3

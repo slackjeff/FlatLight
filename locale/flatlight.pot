@@ -25,6 +25,14 @@ msgstr ""
 msgid "Gerando o arquivo de cache, Aguarde..."
 msgstr ""
 
+#: flatlight:103
+msgid "Falha ao gerar o cache."
+msgstr ""
+
+#: flatlight:239
+msgid "Uso:"
+msgstr ""
+
 #: flatlight:112
 msgid "Selecione os aplicativos para INSTALAR <TAB seleciona múltiplos>."
 msgstr ""
