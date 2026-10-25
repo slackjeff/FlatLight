@@ -93,8 +93,8 @@ function update_cache()
 	mkdir -p "$(dirname "$CACHE_FILE")" || return 1
 	temp=$(mktemp "${CACHE_FILE}.XXXXXX") || return 1
 
-	flatpak remote-ls flathub --app --columns=name,application | \
-	awk -F '\t' '{printf "%-45s %s\n",$1,$2}' > "$temp"
+	flatpak remote-ls flathub --app --columns=name,version,description,application | \
+	awk -F '\t' '{printf "%-45s %-12s %-45.45s %s\n",$1,$2,$3,$4}' > "$temp"
 
 	if [[ -s "$temp" ]]; then
 		mv -f "$temp" "$CACHE_FILE"
