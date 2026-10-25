@@ -53,7 +53,7 @@ sudo ./install.sh
 Este documento descreve os objetivos futuros e o planejamento de evolução
 
 ## [Planejado]
-* [ ] Melhorar o formato de cache que hoje é simples
+* [x] Melhorar o formato de cache que hoje é simples
 * [ ] Documentação para man (página de manual do sistema)
 * [A] INICIADO Internacionalização com gettext
 * [x] Validação automática de dependências (`fzf` e `flatpak` instalados)
